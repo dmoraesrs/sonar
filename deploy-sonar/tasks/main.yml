@@ -1,0 +1,5 @@
+---
+# tasks file for deploy-sonar
+- import_tasks: prereq.yml
+- import_tasks: db.yml
+- import_tasks: sonar.yml

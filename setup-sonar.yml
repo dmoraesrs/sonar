@@ -1,0 +1,6 @@
+- hosts: sonar
+  become: yes
+  user: parallels
+  roles:
+  - { role: deploy-sonar, tags: ["deploy_sonar"]}
+  

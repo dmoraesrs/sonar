@@ -1,0 +1,15 @@
+---
+# vars file for deploy-sonar
+sonarsource_url: "https://binaries.sonarsource.com"
+sonar_marketplace_url: "https://update.sonarsource.org"
+sonar_distribution_url: "{{ sonarsource_url }}/Distribution"
+sonar_archive: "sonarqube-{{ sonar_version }}.zip"
+sonar_download_url: "{{ sonar_distribution_url }}/sonarqube/{{ sonar_archive }}"
+sonar_plugin_home: "{{ sonar_base_dir }}/extensions/plugins"
+sonar_plugin_baseurl: "{{ sonar_distribution_url }}"
+sonar_commercial_plugin_baseurl: "{{ sonarsource_url }}/CommercialDistribution"
+database_name: sonarqube
+database_password: lab01123
+database_user: sonar
+pg_version: 13
+sonar_jdbc_url: jdbc:postgresql://localhost:5432/sonarqube

@@ -1,0 +1,59 @@
+---
+- name: Add postgresql apt repository key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add postgresql apt repository
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+    state: present
+    update_cache: yes
+
+- name: Install postgresql dependencies
+  apt:
+    name: acl
+    state: present
+
+- name: Install postgresql
+  apt:
+    name: "postgresql-{{ pg_version }}"
+    state: present
+
+- name: Install python-psycopg2
+  apt:
+    name: python3-psycopg2
+    state: present
+
+- name: Ensure postgresql is enabled running
+  service:
+    name: postgresql
+    enabled: yes
+    state: started
+
+- name: Change listen_addresses to '*'
+  lineinfile:
+    dest: "/etc/postgresql/{{ pg_version }}/main/postgresql.conf"
+    regexp: "^#listen_addresses"
+    line: "listen_addresses = '*'"
+    state: present
+    backup: yes
+  notify:
+    - restart postgresql
+
+- name: Create a new database with name {{ database_name }}
+  become: yes
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    state: present
+    name: "{{ database_name }}"
+
+- name: "Ensure the user {{ database_user }} has access to the database"
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    db: "{{ database_name }}"
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+    encrypted: yes
+    priv: ALL
